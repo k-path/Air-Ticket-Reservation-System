@@ -1,0 +1,270 @@
+﻿{% extends "layouts/base.html" %}
+{% block body %}
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>Customer Homepage</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous" />
+</head>
+<h1 class=heading>{{ name }}</h1>
+<body>
+
+    <h2>You can check for future flights and check the status of flights here</h2>
+    <button onclick="location.href = 'searchpage'" type="button">Begin Search</button>
+</body>
+
+<!-- VIEW FLIGHTS -->
+<table>
+    <th>Airline</th>
+    <th>Flight number</th>
+    <th>Departure date</th>
+    <th>Departure time</th>
+    <th>Departure airport</th>
+    <th>Arrival date</th>
+    <th>Arrival time</th>
+    <th>Arrival airport</th>
+    {% for line in required_flights %}
+    <tr>
+        <td>{{line['airline_name']}}</td>
+        <td>{{line['flight_num']}}</td>
+        <td>{{line['d_date']}}</td>
+        <td>{{line['d_time']}}</td>
+        <td>{{line['d_airport']}}</td>
+        <td>{{line['a_date']}}</td>
+        <td>{{line['a_time']}}</td>
+        <td>{{line['a_airport']}}</td>
+    </tr>
+    {% endfor %}
+</table>
+<form class=action action="/customerViewFlights" method="POST">
+    <p class='center'>Search by Departure/Arrival Airport</p>
+    Departure airport: <input type="text" name="d_airport" placeholder="Departure airport" /> &nbsp;
+    Arrival airport: <input type="text" name="a_airport" placeholder="Arrival airport" /> <br>
+    <p class='center'>Search by Departure/Arrival City</p>
+    Departure city: <input type="text" name="d_city" placeholder="Departure city" /> &nbsp;
+    Arrival city: <input type="text" name="a_city" placeholder="Arrival city" /></br>
+    From: <input type="date" name="start_date" placeholder="Start date: YYYY-MM-DD" /> &nbsp;
+    To: <input type="date" name="end_date" placeholder="End date: YYYY-MM-DD" /> <br>
+    <input type="submit" value="View my flights" />
+    {% if no_future_error %}
+    <p class="error"><strong>Error:</strong> {{no_future_error}}</p>
+    {% endif %}
+    {% if no_flight_error %}
+    <p class="error"><strong>Error:</strong> {{no_flight_error}}</p>
+    {% endif %}
+    {% if invalid_error %}
+    <p class="error"><strong>Error:</strong> {{invalid_error}}</p>
+    {% endif %}
+</form>
+
+
+<!-- SEARCH FLIGHTS, PURCHASE TICKETS, CANCEL FLIGHT, RATE FLIGHTS -->
+<table>
+    <th>Airline name</th>
+    <th>Flight number</th>
+    <th>Departure date</th>
+    <th>Departure time</th>
+    <th>Departure airport</th>
+    <th>Arrival date</th>
+    <th>Arrival time</th>
+    <th>Arrival airport</th>
+    <th>Base price</th>
+    {% for line in go_flights %}
+    <tr>
+        <td>{{line['airline_name']}}</td>
+        <td>{{line['flight_num']}}</td>
+        <td>{{line['d_date']}}</td>
+        <td>{{line['d_time']}}</td>
+        <td>{{line['d_airport']}}</td>
+        <td>{{line['a_date']}}</td>
+        <td>{{line['a_time']}}</td>
+        <td>{{line['a_airport']}}</td>
+        <td>{{line['base_price']}}</td>
+    </tr>
+    {% endfor %}
+</table>
+<br>
+<table>
+    <th>Airline name</th>
+    <th>Flight number</th>
+    <th>Departure date</th>
+    <th>Departure time</th>
+    <th>Departure airport</th>
+    <th>Arrival date</th>
+    <th>Arrival time</th>
+    <th>Arrival airport</th>
+    <th>Base price</th>
+    {% for line in return_flights %}
+    <tr>
+        <td>{{line['airline_name']}}</td>
+        <td>{{line['flight_num']}}</td>
+        <td>{{line['d_date']}}</td>
+        <td>{{line['d_time']}}</td>
+        <td>{{line['d_airport']}}</td>
+        <td>{{line['a_date']}}</td>
+        <td>{{line['a_time']}}</td>
+        <td>{{line['a_airport']}}</td>
+        <td>{{line['base_price']}}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<form class=action action="/customerSearchFlights" method="POST">
+    <p class='center'>Search by Departure/Arrival Airport</p>
+    Departure airport: <input type="text" name="d_airport" placeholder="Departure airport" /> &nbsp;
+    Arrival airport: <input type="text" name="a_airport" placeholder="Arrival airport" /> <br>
+    <p class='center'>Search by Departure/Arrival City</p>
+    Departure city: <input type="text" name="d_city" placeholder="Departure city" /> &nbsp;
+    Arrival city: <input type="text" name="a_city" placeholder="Arrival city" /></br>
+    Departure date: <input type="date" name="d_date" placeholder="Departure date: YYYY-MM-DD" /> &nbsp;
+    Return date (for round trip): <input type="date" name="return_date" placeholder="Return date: YYYY-MM-DD" /> <br>
+    <input type="submit" value="Search for flights" /> <br>
+    {% if noReturnError %}
+    <p class="error"><strong>Error:</strong> {{noReturnError}}</p>
+    {% endif %}
+    {% if invalidSearchError %}
+    <p class="error"><strong>Error:</strong> {{invalidSearchError}}</p>
+    {% endif %}
+    {% if dateError %}
+    <p class="error"><strong>Error:</strong> {{dateError}}</p>
+    {% endif %}
+    {% if noGoError %}
+    <p class="error"><strong>Error:</strong> {{noGoError}}</p>
+    {% endif %}
+</form>
+
+<form class=action action="/purchaseTicket" method="POST">
+    Flight number: <input type="number" name="flight_num" placeholder="Flight number" /> &nbsp;
+    Departure date: <input type="date" name="d_date" placeholder="Departure date: YYYY-MM-DD" /> <br>
+    Departure time: <input type="time" name="d_time" placeholder="Departure time" /> &nbsp;
+    Airline name: <input type="text" name="airline_name" placeholder="Airline name" /> <br>
+    Card type: <input type="text" name="card_type" placeholder="Card type: debit/credit" /> &nbsp;
+    Card number: <input type="number" name="card_number" placeholder="Card number" /> <br>
+    Name on card: <input type="text" name="card_name" placeholder="Name on card" /> &nbsp;
+    Expiration date: <input type="date" name="card_exp" placeholder="Expiration date" /> <br>
+    <input type="submit" value="Purchase tickets" /> &nbsp;
+
+    {% if no_purchase_error %}
+    <p class="error"><strong>Error:</strong> {{no_purchase_error}}</p>
+    {% endif %}
+    {% if no_ticket_error %}
+    <p class="error"><strong>Error:</strong> {{no_ticket_error}}</p>
+    {% endif %}
+    {% if card_exp_error %}
+    <p class="error"><strong>Error:</strong> {{card_exp_error}}</p>
+    {% endif %}
+    {% if purchase_message %}
+    <p class="message">{{purchase_message}}</p>
+    {% endif %}
+</form>
+
+<form class=action action="/cancelTrip" method="POST">
+    Flight number: <input type="number" name="flight_num" placeholder="Flight number" /> &nbsp;
+    Departure date: <input type="date" name="d_date" placeholder="Departure date: YYYY-MM-DD" /> <br>
+    Departure time: <input type="time" name="d_time" placeholder="Departure time" /> &nbsp;
+    Airline name: <input type="text" name="airline_name" placeholder="Airline name" /> <br>
+    <input type="submit" value="Cancel my trip" />
+    {% if no_cancel_error %}
+    <p class="error"><strong>Error:</strong> {{no_cancel_error}}</p>
+    {% endif %}
+    {% if cancel_message %}
+    <p class="message">{{cancel_message}}</p>
+    {% endif %}
+</form>
+
+<form class=action action="/customerRating" method="POST">
+    Flight number: <input type="number" name="flight_num" placeholder="Flight number" required /> &nbsp;
+    Departure date: <input type="date" name="d_date" placeholder="Departure date: YYYY-MM-DD" required /> <br>
+    Departure time: <input type="time" name="d_time" placeholder="Departure time" required /> &nbsp;
+    Airline name: <input type="text" name="airline_name" placeholder="Airline name" required /> <br>
+    Rating: <input type="number" name="rating" placeholder="Rating" required /> &nbsp;
+    Comment: <input type="text" name="comment" placeholder="Comment" required /> <br>
+    <input type="submit" value="Rate and comment my trip" />
+    {% if noFlightError %}
+    <p class="error"><strong>Error:</strong> {{noFlightError}}</p>
+    {% endif %}
+    {% if commentExistError %}
+    <p class="error"><strong>Error:</strong> {{commentExistError}}</p>
+    {% endif %}
+    {% if commentSucc %}
+    <p class="message">{{commentSucc}}</p>
+    {% endif %}
+</form>
+
+
+
+
+<!-- EXPENSES FOR THE LAST YEAR -->
+<table>
+    <th>Total spending last year</th>
+    <tr>
+        <td>{{total_last_year}}</td>
+    </tr>
+
+</table>
+<br>
+<table>
+    <th>Start date</th>
+    <th>End date</th>
+    <th>Money spent</th>
+    {% for line in spending %}
+    <tr>
+        <td>{{line['start_date']}}</td>
+        <td>{{line['end_date']}}</td>
+        <td>{{line['total']}}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<form class=action action="/trackExpenses" method="POST">
+    From: <input type="date" name="start_date" placeholder="From: YYYY-MM-DD" /> &nbsp;
+    To: <input type="date" name="end_date" placeholder="To: YYYY-MM-DD" /> <br>
+    <input type="submit" value="Track my spending" />
+    {% if startEndError %}
+    <p class="error"><strong>Error:</strong> {{startEndError}}</p>
+    {% endif %}
+    {% if emptyError %}
+    <p class="error"><strong>Error:</strong> {{emptyError}}</p>
+    {% endif %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</html>
+{% endblock %}

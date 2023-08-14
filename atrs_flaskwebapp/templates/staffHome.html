@@ -1,0 +1,354 @@
+﻿{% extends "layouts/base.html" %}
+{% block body %}
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>Staff Homepage</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous" />
+</head>
+<h1 class=heading>{{ name }}</h1>
+<body>
+
+    <h2>You can check for future flights and check the status of flights here</h2>
+    <button onclick="location.href = 'searchpage'" type="button">Begin Search</button>
+
+    <!--VIEW FLIGHTS-->
+</body>
+<table>
+    <th>Flight number</th>
+    <th>Departure date</th>
+    <th>Departure time</th>
+    <th>Departure airport</th>
+    <th>Arrival date</th>
+    <th>Arrival time</th>
+    <th>Arrival airport</th>
+    <th>Customers</th>
+    {% for line in flights %}
+    <tr>
+        <td>{{line['flight_num']}}</td>
+        <td>{{line['d_date']}}</td>
+        <td>{{line['d_time']}}</td>
+        <td>{{line['d_airport']}}</td>
+        <td>{{line['a_date']}}</td>
+        <td>{{line['a_time']}}</td>
+        <td>{{line['a_airport']}}</td>
+        <td>{{line['customer_email']}}</td>
+    </tr>
+    {% endfor %}
+</table>
+<form class=action action="/staffViewFlights" method="POST">
+    <p class='center'>Search by Departure/Arrival Airport</p>
+    Departure airport: <input type="text" name="d_airport" placeholder="Departure airport" /> &nbsp;
+    Arrival airport: <input type="text" name="a_airport" placeholder="Arrival airport" /> <br>
+    <p class='center'>Search by Departure/Arrival City</p>
+    Departure city: <input type="text" name="d_city" placeholder="Departure city" /> &nbsp;
+    Arrival city: <input type="text" name="a_city" placeholder="Arrival city" /> <br>
+    From: <input type="date" name="start_date" placeholder="From: YYYY-MM-DD" /> &nbsp;
+    To: <input type="date" name="end_date" placeholder="To: YYYY-MM-DD" /> <br>
+    <input type="submit" value="View flights" />
+    {% if mismatchError %}
+    <p class="error"><strong>Error:</strong> {{mismatchError}}</p>
+    {% endif %}
+</form>
+
+
+
+
+
+<!--CREATE NEW FLIGHTS-->
+<form class=action action="/createflight" method="POST">
+    Flight number: <input type="number" name="flight_num" placeholder="Flight number" required /> &nbsp;
+    Departure airport: <input type="text" name="d_airport" placeholder="Departure airport" required /> <br>
+    Departure date: <input type="date" name="d_date" placeholder="Departure date: YYYY-MM-DD" required /> &nbsp;
+    Departure time: <input type="time" name="d_time" placeholder="Departure time: hh:mm:ss" required /> <br>
+    Arrival date: <input type="date" name="a_date" placeholder="Arrival date: YYYY-MM-DD" required /> &nbsp;
+    Arrival time: <input type="time" name="a_time" placeholder="Arrival time: hh:mm:ss" required /> <br>
+    Arrival airport: <input type="text" name="a_airport" placeholder="Arrival airport" required /> &nbsp;
+    Airplane identification number: <input type="number" name="a_id" placeholder="Airplane identification number" required />
+    <br>
+    Base price: <input type="number" name="base_price" placeholder="Base price" required /> <br>
+    <input type="submit" value="Create new flights" />
+    {% if flightExistError %}
+    <p class="error"><strong>Error:</strong> {{flightExistError}}</p>
+    {% endif %}
+    {% if noPlaneError %}
+    <p class="error"><strong>Error:</strong> {{noPlaneError}}</p>
+    {% endif %}
+    {% if pastFlightError %}
+    <p class="error"><strong>Error:</strong> {{pastFlightError}}</p>
+    {% endif %}
+    {% if addFlightSucc %}
+    <p class="message">{{addFlightSucc}}</p>
+    {% endif %}
+    {% if departureDateError %}
+    <p class="error"><strong>Error:</strong> {{departureDateError}}</p>
+    {% endif %}
+    {% if sameAirportError %}
+    <p class="error"><strong>Error:</strong> {{sameAirportError}}</p>
+    {% endif %}
+</form>
+
+<!--CHANGE STATUS OF FLIGHTS-->
+<form class=action action="/updateStatus" method="POST">
+    Flight number: <input type="number" name="flight_num" placeholder="Flight number" required /> &nbsp;
+    Departure date: <input type="date" name="d_date" placeholder="Departure date: YYYY-MM-DD" required /> </br>
+    Departure time: <input type="time" name="d_time" placeholder="Departure time: hh:mm:ss" required /> &nbsp;
+    Airline name: <input type="text" name="airline_name" placeholder="Airline name" required /> <br>
+    Flight status: <input type="text" name="flight_status" placeholder="Flight status: on time/delayed" required /> <br>
+    <input type="submit" value="Change status of the flight" />
+    {% if changeStatusError %}
+    <p class="error"><strong>Error:</strong> {{changeStatusError}}</p>
+    {% endif %}
+    {% if changeStatusSucc %}
+    <p class="message">{{changeStatusSucc}}</p>
+    {% endif %}
+</form>
+
+
+
+
+
+ <!--ADD AIRPLANE IN SYSTEM-->
+<table>
+    <th>Airplane identification number</th>
+    <th>Number of seats</th>
+    <th>Manufacture company</th>
+    <th>Age</th>
+    <th>Airline name</th>
+    {% for line in airplanes %}
+    <tr>
+        <td>{{line['a_id']}}</td>
+        <td>{{line['num_seats']}}</td>
+        <td>{{line['manufacturer']}}</td>
+        <td>{{line['age']}}</td>
+        <td>{{line['airline_name']}}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<form class=action action="/addAirplane" method="POST">
+    Airplane identification number: <input type="number" name="a_id" placeholder="Airplane identification number" /> &nbsp;
+    Number of seats: <input type="number" name="num_seats" placeholder="Number of seats" /> </br>
+    Manufacture company: <input type="text" name="manufacturer" placeholder="Manufacture company" /> &nbsp;
+    Age: <input type="number" name="age" placeholder="Age" /> </br>
+    <input type="submit" value="Add new airplane in the system" />
+    {% if planeExistError %}
+    <p class="error"><strong>Error:</strong> {{planeExistError}}</p>
+    {% endif %}
+    {% if addPlaneSucc %}
+    <p class="message">{{addPlaneSucc}}</p>
+    {% endif %}
+</form>
+
+
+
+
+
+
+
+
+<!-- ADD NEW AIRPORT IN THE SYSTEM -->
+<form class=action action="/addAirport" method="POST">
+    Airport name: <input type="text" name="airport_name" placeholder="Airport name" required /> &nbsp;
+    Airport city: <input type="text" name="airport_city" placeholder="Airport city" required /> </br>
+    Airport country: <input type="text" name="airport_country" placeholder="Airport country" required /> &nbsp;
+    Airport type: <input type="text" name="airport_type" placeholder="Airport type" required /> <br>
+    <input type="submit" value="Add new airport in the system" />
+    {% if airportExistError %}
+    <p class="error"><strong>Error:</strong> {{airportExistError}}</p>
+    {% endif %}
+    {% if addAirportSucc %}
+    <p class="message">{{addAirportSucc}}</p>
+    {% endif %}
+</form>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- VIEW FLIGHT RATING -->
+<table>
+    <th>Rating</th>
+    <th>Comment</th>
+    {% for line in rating_comment %}
+    <tr>
+        <td>{{line['rating']}}</td>
+        <td>{{line['comment']}}</td>
+    </tr>
+    {% endfor %}
+</table>
+<br>
+<table>
+    <th>Average rating</th>
+    <tr>
+        <td>{{average_rating}}</td>
+    </tr>
+</table>
+<form class=action action="/viewRating" method="POST">
+    Flight number: <input type="number" name="flight_num" placeholder="Flight number" required /> &nbsp;
+    Departure date: <input type="date" name="d_date" placeholder="Departure date: YYYY-MM-DD" required /> <br>
+    Departure time: <input type="time" name="d_time" placeholder="Departure time: hh:mm:ss" required /> <br>
+    <input type="submit" value="View flight ratings" />
+    {% if noDataError %}
+    <p class="error"><strong>Error:</strong> {{noDataError}}</p>
+    {% endif %}
+    {% if invalidFlightError %}
+    <p class="error"><strong>Error:</strong> {{invalidFlightError}}</p>
+    {% endif %}
+</form>
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- VIEW FREQUENT CUSTOMER -->
+<table>
+    <th>Most frequent customer within the last year</th>
+    <tr>
+        <td>{{freq_customer}}</td>
+    </tr>
+</table>
+<form class=action action="/frequentCustomer" method="POST">
+    <input type="submit" value="View frequent customer" />
+</form>
+<table>
+    <th>Flight number</th>
+    <th>Departure date</th>
+    <th>Departure time</th>
+    <th>Departure airport</th>
+    <th>Arrival date</th>
+    <th>Arrival time</th>
+    <th>Arrival airport</th>
+    {% for line in customer_flights %}
+    <tr>
+        <td>{{line['flight_num']}}</td>
+        <td>{{line['d_date']}}</td>
+        <td>{{line['d_time']}}</td>
+        <td>{{line['d_airport']}}</td>
+        <td>{{line['a_date']}}</td>
+        <td>{{line['a_time']}}</td>
+        <td>{{line['a_airport']}}</td>
+    </tr>
+    {% endfor %}
+</table>
+<form class=action action="/viewFlightsOf" method="POST">
+    <input type="text" name="customer_email" placeholder="Customer email" required /> <br>
+    <input type="submit" value="View all flights of this customer" />
+    {% if noEmailError %}
+    <p class="error"><strong>Error:</strong> {{noEmailError}}</p>
+    {% endif %}
+</form>
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- VIEW REPORTS -->
+<table>
+    <th>Start Date</th>
+    <th>End Date</th>
+    <th>Tickets sold</th>
+    <tr>
+        <td>{{start_date}}</td>
+        <td>{{end_date}}</td>
+        <td>{{custom_num_tickets}}</td>
+    </tr>
+</table>
+<br>
+<table>
+    <th>Time</th>
+    <th>Tickets sold</th>
+    <tr>
+        <td>Last year</td>
+        <td>{{last_year_num}}</td>
+    </tr>
+</table>
+<br>
+<table>
+    <th>Time</th>
+    <th>Tickets sold</th>
+    <tr>
+        <td>Last month</td>
+        <td>{{last_month_num}}</td>
+    </tr>
+</table>
+
+<form class=action action="/viewReports" method="POST">
+    From: <input type="date" name="start_date" placeholder="From: YYYY-MM-DD" /> &nbsp;
+    To: <input type="date" name="end_date" placeholder="To: YYYY-MM-DD" /> <br>
+    <input type="submit" value="View reports" />
+    {% if noDateError %}
+    <p class="error"><strong>Error:</strong> {{noDateError}}</p>
+    {% endif %}
+</form>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- VIEW EARNED REVENUE -->
+<table>
+    <th>Time</th>
+    <th>Total revenue</th>
+    <tr>
+        <td>Past Month</td>
+        <td>{{last_year_revenue}}</td>
+    </tr>
+</table>
+<br>
+<table>
+    <th>Time</th>
+    <th>Total revenue</th>
+    <tr>
+        <td>Past Month</td>
+        <td>{{last_month_revenue}}</td>
+    </tr>
+</table>
+
+<form class=action action="/viewRevenue" method="POST">
+    <input type="submit" value="View earned revenue" />
+</form>
+
+
+
+
+
+
+
+</html>
+{% endblock %}

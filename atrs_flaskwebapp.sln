@@ -1,0 +1,39 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.32929.386
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "atrs_flaskwebapp", "atrs_flaskwebapp\atrs_flaskwebapp.pyproj", "{7F983588-FF21-4248-9A3B-A7F8F73E4A2F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6DE4AC76-3B37-4F30-9A6C-10A9FBA338DC}"
+	ProjectSection(SolutionItems) = preProject
+		atrs_flaskwebapp\templates\layouts\base.html = atrs_flaskwebapp\templates\layouts\base.html
+		customerHome.html = customerHome.html
+		atrs_flaskwebapp\templates\index.html = atrs_flaskwebapp\templates\index.html
+		atrs_flaskwebapp\templates\login.html = atrs_flaskwebapp\templates\login.html
+		atrs_flaskwebapp\templates\pretty.html = atrs_flaskwebapp\templates\pretty.html
+		register.html = register.html
+		registerCus.html = registerCus.html
+		registerStaff.html = registerStaff.html
+		regSuccess.html = regSuccess.html
+		response.html = response.html
+		searchpage.html = searchpage.html
+		staffHome.html = staffHome.html
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7F983588-FF21-4248-9A3B-A7F8F73E4A2F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7F983588-FF21-4248-9A3B-A7F8F73E4A2F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {73116C7B-DB90-4A4E-A34D-7EF045FBCF5E}
+	EndGlobalSection
+EndGlobal

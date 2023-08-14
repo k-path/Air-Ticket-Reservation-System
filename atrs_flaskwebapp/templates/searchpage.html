@@ -1,0 +1,112 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title></title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous" />
+</head>
+<table class="table table-striped custab">
+    <thead>
+        <tr>
+            <th>Flight Number</th>
+            <th>Departure Date</th>
+            <th>Departure Time</th>
+            <th>From</th>
+            <th>Arrival Date</th>
+            <th>Arrival Time</th>
+            <th>To</th>
+            <th>Base Price</th>
+
+        </tr>
+    </thead>
+    <tbody>
+        {% for row in go_flights %}
+        <tr>
+            <td>{{row['flight_num']}}</td>
+            <td>{{row['d_date']}}</td>
+            <td>{{row['d_time']}}</td>
+            <td>{{row['d_airport']}}</td>
+            <td>{{row['a_date']}}</td>
+            <td>{{row['a_time']}}</td>
+            <td>{{row['a_airport']}}</td>
+            <td>{{row['base_price']}}</td>
+        </tr>
+        {% endfor %}
+</table>
+<br>
+<table class="table table-striped custab">
+    <th>Flight Number</th>
+    <th>Departure Date</th>
+    <th>Departure Time</th>
+    <th>From</th>
+    <th>Arrival Date</th>
+    <th>Arrival Time</th>
+    <th>To</th>
+    <th>Base Price</th>
+    {% for row in return_flights %}
+    <tr>
+        <td>{{row['flight_num']}}</td>
+        <td>{{row['d_date']}}</td>
+        <td>{{row['d_time']}}</td>
+        <td>{{row['d_airport']}}</td>
+        <td>{{row['a_date']}}</td>
+        <td>{{row['a_time']}}</td>
+        <td>{{row['a_airport']}}</td>
+        <td>{{row['base_price']}}</td>
+    </tr>
+    {% endfor %}
+</table >
+<form class=action action="/searchflights" method="POST">
+    <p class='center'>Search by Departure/Arrival Airport</p>
+    Departure airport: <input type="text" name="d_airport" placeholder="Departure airport" /> &nbsp;
+    Arrival airport: <input type="text" name="a_airport" placeholder="Arrival airport" /></br>
+    <p class='center'>Search by Departure/Arrival City</p>
+    Departure city: <input type="text" name="d_city" placeholder="Departure city" /> &nbsp;
+    Arrival city: <input type="text" name="a_city" placeholder="Arrival city" /></br>
+    Departure date: <input type="date" name="d_date" placeholder="Departure date: YYYY-MM-DD" /> &nbsp;
+    Return date (for round trip): <input type="date" name="return_date" placeholder="Return date: YYYY-MM-DD" /></br>
+    <input type="submit" value="Show all future flights" />
+    {% if dateError %}
+    <p class="error"><strong>Error:</strong> {{dateError}}</p>
+    {% endif %}
+    {% if noGoError %}
+    <p class="error"><strong>Error:</strong> {{noGoError}}</p>
+    {% endif %}
+    {% if noReturnError %}
+    <p class="error"><strong>Error:</strong> {{noReturnError}}</p>
+    {% endif %}
+    {% if invalidSearchError %}
+    <p class="error"><strong>Error:</strong> {{invalidSearchError}}</p>
+    {% endif %}
+</form>
+<table class="table table-striped custab">
+    <th>Airline name</th>
+    <th>Flight number</th>
+    <th>Departure date</th>
+    <th>Arrival date</th>
+    <th>Flight status</th>
+    {% for row in status %}
+    <tr>
+        <td>{{row['airline_name']}}</td>
+        <td>{{row['flight_num']}}</td>
+        <td>{{row['d_date']}}</td>
+        <td>{{row['a_date']}}</td>
+        <td>{{row['status']}}</td>
+    </tr>
+    {% endfor %}
+</table>
+<form class=action action="/checkstatus" method="POST">
+    Airline name: <input type="text" name="airline_name" placeholder="Airline name" required /> &nbsp;
+    Flight number: <input type="number" name="flight_num" placeholder="Flight number" required /></br>
+    Departure date: <input type="date" name="d_date" placeholder="Departure date: YYYY-MM-DD" required /> &nbsp;
+    Arrival date: <input type="date" name="a_date" placeholder="Arrival date: YYYY-MM-DD" required /></br>
+    <input type="submit" value="Check flight status" />
+    {% if invalidDataError %}
+    <p class="error"><strong>Error:</strong> {{invalidDataError}}</p>
+    {% endif %}
+    {% if invalidFlightError %}
+    <p class="error"><strong>Error:</strong> {{invalidFlightError}}</p>
+    {% endif %}
+</form>
